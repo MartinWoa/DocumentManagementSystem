@@ -92,16 +92,17 @@ public class proposal {
 	   }
 	   return null;
    }
-   static Vector getProposalById(int id) throws SQLException
+   static proposal getProposalById(int id) throws SQLException
     {   
         CreatConnect con=new CreatConnect();
+        proposal pro=new proposal();
         Vector<proposal> pros =new Vector<proposal>() ;
     	Statement sta=con.getConnection().createStatement();
     	try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE ID= "+id+""))
     	{
     	  while(res.next())
     	  {
-    		 proposal pro=new proposal();
+    		 
     		 pro.setID(res.getInt(1));
     		 pro.setName(res.getString(2));
     		 pro.setAuthor(res.getString(3));
@@ -114,7 +115,7 @@ public class proposal {
     	 
     	}
     	 sta.close();
-    	return pros;	
+    	return pro;	
     }
     void setAgaAndSup()
     {

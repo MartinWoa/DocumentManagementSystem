@@ -97,7 +97,13 @@ public abstract class  Users implements Serializable{
         sta.close();
     	return null;
     }
-    
+    String getSexInString()
+    {
+    	if(this.Sex)
+    	{return "男";}
+    	else
+    	{return "女";}
+    }
     static boolean isexist(String account) throws SQLException
     {
     	CreatConnect con=new CreatConnect();
@@ -113,6 +119,19 @@ public abstract class  Users implements Serializable{
     	return false;
     }
     
+    static void updateuser(Users user)
+    {  CreatConnect con=new CreatConnect();
+	    java.sql.Date sd =new java.sql.Date(user.getbirthday().getTime());
+    	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee="+user.getSpecialcommittee()+" ,IndustryBranch="+user.IndustryBranch+" ,birthday="+sd+" ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+"  WHERE Account ='"+user.getAccount()+"' ";
+    	try {
+			PreparedStatement ps=con.getConnection().prepareStatement(sql);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     static void rigon(Users user)
     {   CreatConnect con=new CreatConnect();
     	try {

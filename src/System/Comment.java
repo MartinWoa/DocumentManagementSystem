@@ -1,4 +1,6 @@
 package System;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Comment
@@ -19,6 +21,24 @@ String getComment() {return this.comment;}
 String getCommenter() {return this.commenter;}
 Date getTime() {return this.time;}
 
-
+static void CreatComment(Comment com)
+{
+	CreatConnect con=new CreatConnect();
+	String sql = "Insert into comment "+ "(proid,issupport,comment,commenter,commenttime)values(?,?,?,?,?)";
+	try {
+		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+		ps.setInt(1,com.getProid());
+		ps.setBoolean(2,com.getSupport());
+		ps.setString(3,com.getComment());
+		ps.setString(4, com.getCommenter());
+		java.sql.Date sd =new java.sql.Date(com.getTime().getTime());
+    	ps.setDate(5, sd);
+		ps.executeUpdate();
+    	ps.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
 
 }

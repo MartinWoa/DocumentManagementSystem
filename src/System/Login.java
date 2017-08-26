@@ -11,6 +11,8 @@ import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.Cursor;
+
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.io.*;
@@ -34,6 +36,7 @@ import java.awt.event.MouseEvent;
 
 public class Login {
 	private JScrollPane taSearchScroll;
+	private JScrollPane taSearchScroll2;
     private Users user;
     private JFrame frame;
     private CardLayout cl_panel_main;
@@ -83,11 +86,18 @@ public class Login {
     private JPasswordField passwordField_1;
    private JPanel panel_main;
    private JTextField taTitle;
-
+   private JTextField taSearchFiled;
+   private JTextField asName;
+   private JTextField asSex;
+   private JTextField asPhone;
+   private JTextField asBirthDay;
+   private JPasswordField passwordField_2;
+   private JTextField asAdress;
+    private JLabel accountLabel;
     private void initialize() {
     	
         frame = new JFrame("能力规范文稿管理系统");//主界面
-        frame.setBounds(100, 100, 717, 658);
+        frame.setBounds(100, 100, 717, 715);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         
@@ -250,6 +260,7 @@ public class Login {
         Button_quxiao.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cl_panel_main.show(panel_main,"denglu");//取消事件
+                check=0;
             }
         });
         Button_quxiao.setBackground(Color.GRAY);
@@ -338,11 +349,7 @@ public class Login {
         panel_main.add(panel_logined, "logined1");
         CardLayout clLogined=   new CardLayout(0, 0);
         
-        /*
-         * 
-         * 
-         * 提案编辑
-         */
+     
         panel_logined.setLayout(clLogined);
         
         JPanel panel_nothing = new JPanel();
@@ -356,7 +363,174 @@ public class Login {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+        /*
+         * 
+         * 提案搜索
+         */
+        JPanel panel_Search = new JPanel();
+        panel_logined.add(panel_Search, "taSearcher");
+        panel_Search.setLayout(null);        
+        taSearchFiled = new JTextField();
+        taSearchFiled.setBounds(129, 43, 300, 26);
+        panel_Search.add(taSearchFiled);
+        taSearchFiled.setColumns(10);
+        //提案搜索事件
+        JButton taSearchButton = new JButton("搜索");
+        taSearchButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		Vector<proposal> v=new Vector<proposal>();
+        		if(taSearchFiled.getText().equals("")) {JOptionPane.showMessageDialog(null, "请输入编号或者账号", "警告", JOptionPane.ERROR_MESSAGE);return; }
+        		try {
+        		if(isNumeric(taSearchFiled.getText()))
+        		{
+					v.add(proposal.getProposalById(Integer.parseInt(taSearchFiled.getText())));
+				    
+        		}
+        		else
+        		{   
+        			v=proposal.getProposalByAccount(taSearchFiled.getText());
+        			
+        		}
+        		if(v.isEmpty()) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
+        		if(v.get(0).getID()==0) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
+        		JTable proTable = new ProTable(v,null,null,user,0,1);
+                taSearchScroll2 = new JScrollPane(proTable); 
+                
+                taSearchScroll2.setLocation(48, 153);
+                taSearchScroll2.setSize(615, 456);
+                panel_Search.add(taSearchScroll2);
+        		} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+        taSearchButton.setBounds(474, 44, 93, 23);
+        panel_Search.add(taSearchButton);
+        
+        JLabel label_2 = new JLabel("请输入提案编号或者提案作者账号");
+        label_2.setForeground(Color.LIGHT_GRAY);
+        label_2.setBounds(129, 79, 300, 26);
+        panel_Search.add(label_2);
+		/*
+		 * 
+		 * 
+		 * 信息维护
+		 */
+        
+        
+        
+        JPanel panel_accountSet = new JPanel();
+        panel_logined.add(panel_accountSet, "accountSet");
+        panel_accountSet.setLayout(null);
+        
+        accountLabel = new JLabel("");
+        accountLabel.setBounds(157, 37, 162, 15);
+        panel_accountSet.add(accountLabel);
+        
+        asName = new JTextField();
+
+        asName.setColumns(10);
+        asName.setBounds(157, 95, 190, 24);
+        panel_accountSet.add(asName);
+        
+        asSex = new JTextField();
+
+        asSex.setColumns(10);
+        asSex.setBounds(157, 129, 190, 24);
+        panel_accountSet.add(asSex);
+        
+        asPhone = new JTextField();
+
+        asPhone.setColumns(10);
+        asPhone.setBounds(157, 163, 190, 24);
+        panel_accountSet.add(asPhone);
+        
+        asBirthDay = new JTextField();
+
+        asBirthDay.setColumns(10);
+        asBirthDay.setBounds(157, 197, 190, 24);
+        panel_accountSet.add(asBirthDay);
+        
+        passwordField_2 = new JPasswordField();
+        passwordField_2.setBounds(157, 61, 190, 24);
+        panel_accountSet.add(passwordField_2);
+        
+        asAdress = new JTextField();
+        asAdress.setColumns(10);
+        asAdress.setBounds(157, 231, 190, 24);
+        panel_accountSet.add(asAdress);
+        
+        JButton asCancel = new JButton("取消");
+        asCancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		check=0;
+        		passwordField_2.setText("");
+        		clLogined.show(panel_logined,"nothing");
+        	}
+        });
+        asCancel.setBounds(157, 295, 93, 23);
+        panel_accountSet.add(asCancel);
+        
+        JButton asConfirm = new JButton("确定");
+
+        asConfirm.setBounds(254, 295, 93, 23);
+        panel_accountSet.add(asConfirm);
+        
+        JLabel asNameWarn = new JLabel("");
+        asNameWarn.setForeground(Color.RED);
+        asNameWarn.setBounds(357, 99, 278, 20);
+        panel_accountSet.add(asNameWarn);
+        
+        JLabel asSexWarn = new JLabel("");
+        asSexWarn.setForeground(Color.RED);
+        asSexWarn.setBounds(357, 133, 278, 20);
+        panel_accountSet.add(asSexWarn);
+        
+        JLabel asPhoneWarn = new JLabel("");
+        asPhoneWarn.setForeground(Color.RED);
+        asPhoneWarn.setBounds(357, 167, 278, 20);
+        panel_accountSet.add(asPhoneWarn);
+        
+        JLabel asBirthWarn = new JLabel("");
+        asBirthWarn.setForeground(Color.RED);
+        asBirthWarn.setBounds(357, 201, 278, 20);
+        panel_accountSet.add(asBirthWarn);
+        
+        JLabel label_3 = new JLabel("地址");
+        label_3.setBounds(63, 235, 54, 20);
+        panel_accountSet.add(label_3);
+        
+        JLabel label_4 = new JLabel("生日");
+        label_4.setBounds(63, 201, 54, 20);
+        panel_accountSet.add(label_4);
+        
+        JLabel label_5 = new JLabel("联系方式");
+        label_5.setBounds(63, 167, 54, 20);
+        panel_accountSet.add(label_5);
+        
+        JLabel label_6 = new JLabel("性别");
+        label_6.setBounds(63, 133, 54, 20);
+        panel_accountSet.add(label_6);
+        
+        JLabel label_7 = new JLabel("姓名");
+        label_7.setBounds(63, 95, 54, 20);
+        panel_accountSet.add(label_7);
+        
+        JLabel label_8 = new JLabel("密码");
+        label_8.setBounds(63, 65, 54, 20);
+        panel_accountSet.add(label_8);
+        
+        /*
+         * 
+         * 
+         * 提案编辑
+         */
+        
+
         
         JPanel panel_taEdit = new JPanel();
         panel_logined.add(panel_taEdit, "taEdit");
@@ -372,9 +546,10 @@ public class Login {
         taSearchScroll = new JScrollPane(); 
         
         taSearchScroll.setLocation(48, 519);
-        taSearchScroll.setSize(615, 61);
+        taSearchScroll.setSize(615, 90);
         panel_taEdit.add(taSearchScroll);
         
+          
         taTitle = new JTextField();
         taTitle.setBounds(48, 36, 213, 21);
         panel_taEdit.add(taTitle);
@@ -477,7 +652,16 @@ public class Login {
         
         accountSet = new JMenuItem("信息维护");
         accountSet.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent arg0) {   	}
+        	public void actionPerformed(ActionEvent arg0) {
+        		accountLabel.setText(user.getAccount());
+        		asName.setText(user.getName());
+        		asPhone.setText(String.valueOf(user.getContact()));
+        		asSex.setText(user.getSexInString());
+        		asAdress.setText(user.getAdress());
+        		asBirthDay.setText(user.getbirthday().toString());
+        		clLogined.show(panel_logined,"accountSet");
+        		check=1;
+        	}
         });
         
         
@@ -494,7 +678,7 @@ public class Login {
         		Vector v;
 				try {
 					v = proposal.getProposalByAccount(user.getAccount());
-					ProTable table=new ProTable(v);
+					ProTable table=new ProTable(v,null, null, user, 0, 1);
 					table.setVisible(true);
 	        		taSearchScroll.setViewportView(table);
 	        		clLogined.show(panel_logined,"taEdit");	
@@ -508,9 +692,10 @@ public class Login {
         });
         
         
-        gfEdit = new JMenuItem("规范查询");
+        gfEdit = new JMenuItem("规范编辑");
         gfEdit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+
         	}
         });
         
@@ -518,6 +703,8 @@ public class Login {
         taSearch = new JMenuItem("提案查询");
         taSearch.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		
+        		clLogined.show(panel_logined,"taSearcher");
         	}
         });
         
@@ -569,9 +756,127 @@ public class Login {
         
         JMenuItem SQLSet = new JMenuItem("服务器设置");
         set.add(SQLSet);
+        /*
+         * 信息维护检查
+         * 
+         * 
+         */
+        asName.addFocusListener(new FocusAdapter() {
+        	@Override
+        	public void focusLost(FocusEvent arg0) 
+        	{
+        		if(asName.getText().equals(""))
+            	{
+            		check=0;
+            		asNameWarn.setText("名字不能为空");
+            	}
+            	else
+            	{
+            		if(!asNameWarn.getText().equals("")&&check==0) {check=1;}
+            		asNameWarn.setText("");
+            	}	
+        	}
+        });
+        asSex.addFocusListener(new FocusAdapter() {
+        	@Override
+        	public void focusLost(FocusEvent e) 
+        	{
+        		if(asSex.getText().equals("男")||asSex.getText().equals("女"))
+            	{
+            		if(!asSexWarn.getText().equals("")&&check==0)
+            		{
+            			check=1;
+            		}
+            		asSexWarn.setText("");
+            	}
+            	else
+            	{
+            		check=0;
+            		asSexWarn.setText("请输入男或女");
+            	}
+        		
+        		
+        	}
+        });
+        asPhone.addFocusListener(new FocusAdapter() {
+        	@Override
+        	public void focusLost(FocusEvent e) {
+        		 if(!isNumeric(asPhone.getText()))
+             	{
+             		check=0;
+             		asPhoneWarn.setText("请正确输入联系号码");
+             	}
+             	else
+             	{   if(!asPhoneWarn.getText().equals("")&&check==0) {check=1;}
+             	    asPhoneWarn.setText("");
+             	}
+        	}
+        });
+        
+        asBirthDay.addFocusListener(new FocusAdapter() {
+        	@Override
+        	public void focusLost(FocusEvent e) {
+        		 SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
+ 				Date date = null;
+ 				try {
+ 					date = formatter1.parse( asBirthDay.getText() );
+ 					
+ 				} catch (ParseException e1) {
+ 					check=0;
+ 					asBirthWarn.setText("<html>生日输入错误，<br>请按照格式yyyyHHdd输入<html>");
+ 					return;
+ 				}
+ 				if(!asBirthWarn.getText().equals("")&&check==0) 
+ 				{
+ 					check=1;
+ 				}
+ 				asBirthWarn.setText("");
+        	}
+        });
         
         
-        
+        asConfirm.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) 
+        	{
+        		 if(check==0)
+                 {
+                	 JOptionPane.showMessageDialog(null, "请完善信息", "警告", JOptionPane.ERROR_MESSAGE); 
+                	 return;
+                 }
+                
+                 
+                if(passwordField_2.getPassword().length!=0) {user.setpassword(passwordField_2.getPassword());}
+                 
+                 user.setName(asName.getText());
+                 user.setAdress(asAdress.getText());
+                 if(asSex.getText().equals("男"))
+                	 {
+                	     user.setSex(true) ;
+                	 }
+                	 else
+                	 {
+                		  user.setSex(false);
+                	 }
+         
+    				try 
+    				{
+    			        SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
+    					Date date = null;
+    					date = formatter1.parse( asBirthDay.getText() );
+    					user.setbirthday(date);
+    				}
+    				catch (ParseException e2) 
+    				{	
+    				}
+    	
+    				user.setContact(Integer.parseInt(asPhone.getText()));
+
+                    Users.updateuser(user);
+                    JOptionPane.showMessageDialog(null, "信息更新成功", "成功", JOptionPane.INFORMATION_MESSAGE); 
+                    check=1;
+    			    
+        	}
+        });
         /*
          * 
          * 
@@ -767,11 +1072,13 @@ public class Login {
                 Users.rigon(rigonUser);
                 cl_panel_main.show(panel_main,"denglu");
                 JOptionPane.showMessageDialog(null, "注册成功请等待审核", "注册成功", JOptionPane.INFORMATION_MESSAGE); 
+                check=0;
 			}
         });
     
 				
     }
+    
     private void logincheck()
     {
     	 try {
@@ -781,11 +1088,16 @@ public class Login {
 				menuChange();
 				frame.setTitle("能力规范文稿管理系统       欢迎您，"+user.getName());
 			    cl_panel_main.show(panel_main,"logined1");//转入主界面
+			    loginWarning.setText("");
+			    textField_yh.setText("");
+			    passwordField_1.setText("");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     }
+    
+    
     private void cancel()
     {     accounter.removeAll();
           writing.removeAll();
@@ -798,7 +1110,7 @@ public class Login {
     private void menuChange()
     { 
     	 accounter.add(cancel);
-         writing.add(accountSet);
+    	 accounter.add(accountSet);
          writing.add(gfSearch);
          writing.add(taEdit);
          writing.add(gfEdit);
@@ -808,7 +1120,6 @@ public class Login {
     	if(user.getIndustryBranch()) {taCheck.add(check2);}
     	if(user.getSpecialcommittee()) {taCheck.add(check1);}
     	control.add(BeginMission);
-    	
     }
     
     
