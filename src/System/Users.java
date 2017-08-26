@@ -14,9 +14,9 @@ public abstract class  Users implements Serializable{
     private String Name;     //濮撳悕
     private boolean Sex;       //鎬у埆
     private int Contact;  //鑱旂郴鏂瑰紡
-    private boolean Specialcommittee;  //涓撳浼?
+    private String Specialcommittee;  //涓撳浼?
     private boolean seminar ;//鐮旂┒浼?
-    private boolean IndustryBranch;//鍒嗗浼?
+    private String IndustryBranch;//鍒嗗浼?
     private Date birthday;    //鐢熸棩
     private String Adress;  //鍦板潃
     private String Referees;  //鎺ㄤ粙浜?
@@ -28,18 +28,18 @@ public abstract class  Users implements Serializable{
     String getName(){return Name;}
   boolean getSex(){return Sex;}
     int getContact(){return Contact;}
-    boolean getSpecialcommittee(){return Specialcommittee;}
+    String getSpecialcommittee(){return Specialcommittee;}
     void setAccount(String rep){Account=rep;}
     void setpassword(char[] rep){password=new String(rep);}
     void setName(String rep){Name=rep;}
     void setSex(boolean rep){Sex=rep;}
     void setContact(int rep){Contact=rep;}
-    void setSpecialcommittee(boolean rep){Specialcommittee=rep;}
+    void setSpecialcommittee(String rep){Specialcommittee=rep;}
     void setstate(boolean state) {this.state=state;}
-    void setIndustryBranch(boolean IndustryBranch) {this.IndustryBranch=IndustryBranch;}
+    void setIndustryBranch(String IndustryBranch) {this.IndustryBranch=IndustryBranch;}
     void setseminar(boolean seminar) {this.seminar=seminar;}
     boolean getseminar() {return seminar;}
-    boolean getIndustryBranch() {return IndustryBranch;}
+    String getIndustryBranch() {return IndustryBranch;}
     void setadmin(boolean admin) {this.admin=admin;}
     Date getbirthday(){ return birthday;}
     String getAdress(){return Adress;}
@@ -60,15 +60,15 @@ public abstract class  Users implements Serializable{
 	    this.setSex(res.getBoolean(5));
 	    this.setContact(res.getInt(6));
 	    this.setseminar(res.getBoolean(7));
-	    this.setSpecialcommittee(res.getBoolean(8));
-	    this.setIndustryBranch(res.getBoolean(9));
+	    this.setSpecialcommittee(res.getString(8));
+	    this.setIndustryBranch(res.getString(9));
 	    this.setbirthday(res.getDate(10));
 	    this.setAdress(res.getString(11));
 	    this.setReferees(res.getString(12));
 	    this.setstate(res.getBoolean(13));
 	    
     }
-    static Users getImformation(String account,char[] password) throws SQLException
+    static Users getImformation(String account) throws SQLException
     {   String pa;
     	Users user;
     	CreatConnect con=new CreatConnect();
@@ -76,9 +76,8 @@ public abstract class  Users implements Serializable{
     	try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state FROM user WHERE Account='"+account+"'"))
     	{   
     		while(res.next())
-    		{   pa=new String(password);
-    			if( res.getString(2).equals(account)&&res.getString(3).equals(pa))
-    			{   
+    		{   
+    			   
     			
     				if(res.getBoolean(1)==true)
     				{
@@ -91,7 +90,7 @@ public abstract class  Users implements Serializable{
     				user.setInformation(res);
     			    sta.close();
     			    return user;
-    			}
+    			
     		}
     	}
         sta.close();
@@ -118,11 +117,46 @@ public abstract class  Users implements Serializable{
     	sta.close();
     	return false;
     }
+    String checkreferees() throws SQLException
+    {    if(this.getReferees().equals(""))
+         {
+    	    return null;
+         }
+         CreatConnect con=new CreatConnect();
+	     Statement sta=con.getConnection().createStatement();
+	    try(ResultSet res=sta.executeQuery("SELECT reason FROM referees WHERE Referees='"+this.getReferees()+"' And Recommended ='"+this.getAccount()+"'"))
+	    {
+	    	while(res.next())
+	    	{
+	    		return res.getString(1);
+	    	}
+	    }
+         
+		return null;
+    	
+    }
+    static void deleteUser(Users user)
+    {
+    	CreatConnect con=new CreatConnect();
+	    String sql="DELETE FROM user WHERE Account  = '"+user.Account+"' ";
+	    PreparedStatement ps;
+		try {
+			ps = con.getConnection().prepareStatement(sql);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	    
+    }
     
     static void updateuser(Users user)
     {  CreatConnect con=new CreatConnect();
 	    java.sql.Date sd =new java.sql.Date(user.getbirthday().getTime());
-    	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee="+user.getSpecialcommittee()+" ,IndustryBranch="+user.IndustryBranch+" ,birthday="+sd+" ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+"  WHERE Account ='"+user.getAccount()+"' ";
+	    System.out.println(sd);
+    	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee='"+user.getSpecialcommittee()+"' ,IndustryBranch='"+user.IndustryBranch+"' ,birthday='"+sd+"' ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+"  WHERE Account ='"+user.getAccount()+"' ";
     	try {
 			PreparedStatement ps=con.getConnection().prepareStatement(sql);
 			ps.executeUpdate();
@@ -132,6 +166,25 @@ public abstract class  Users implements Serializable{
 			e.printStackTrace();
 		}
     }
+    static void insertRecommend(String recommended,String referees,String reason)
+    {
+    	CreatConnect con=new CreatConnect();
+    	try 
+    	{
+   		 String sql = "Insert into referees "+ "(Referees,Recommended,reason)values(?,?,?)";
+   		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+   		ps.setString(1, referees);
+   		ps.setString(2, recommended);
+   		ps.setString(3, reason);
+   		ps.executeUpdate();
+    	ps.close();
+    	}
+    	catch (SQLException e) {
+    		// TODO 自动生成的 catch 块
+    		System.out.println("SQL Exception: " + e.toString());
+    		e.printStackTrace();
+    	}
+    	}
     static void rigon(Users user)
     {   CreatConnect con=new CreatConnect();
     	try {
@@ -143,8 +196,8 @@ public abstract class  Users implements Serializable{
     	ps.setBoolean(4, user.getSex());
     	ps.setInt(5, user.getContact());
     	ps.setBoolean(6, user.getseminar());
-    	ps.setBoolean(7, user.getSpecialcommittee());
-    	ps.setBoolean(8, user.getIndustryBranch());
+    	ps.setString(7, user.getSpecialcommittee());
+    	ps.setString(8, user.getIndustryBranch());
     	java.sql.Date sd =new java.sql.Date(user.getbirthday().getTime());
     	ps.setDate(9, sd);
     	ps.setString(10, user.getAdress());

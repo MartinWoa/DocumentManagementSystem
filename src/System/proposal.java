@@ -92,6 +92,20 @@ public class proposal {
 	   }
 	   return null;
    }
+   static void proUpdate(proposal pro)
+   {   
+	   CreatConnect con=new CreatConnect();
+	   String sql="UPDATE proposal SET proname='"+pro.getName()+"' ,author='"+pro.getAuthor()+"' ,protext='"+pro.getText()+"' ,state="+pro.getstate()+" WHERE ID = "+pro.getID();
+	   try {
+		   
+		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+		ps.executeUpdate();
+		ps.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+   }
    static proposal getProposalById(int id) throws SQLException
     {   
         CreatConnect con=new CreatConnect();

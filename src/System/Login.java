@@ -31,10 +31,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;  
+import java.awt.event.MouseEvent;
+import java.awt.Component;  
 
 
 public class Login {
+	private JComboBox SIBox;
+	private JComboBox IBBox;
+	private JScrollPane scrollPane_4 ;
+	private JPanel panel_logined;
+	private ProTable usertable;
 	private JScrollPane taSearchScroll;
 	private JScrollPane taSearchScroll2;
     private Users user;
@@ -42,8 +48,6 @@ public class Login {
     private CardLayout cl_panel_main;
     private JTextField textField_yh;
     private JTextField textField_name;
-    private JTextField textField_sex;
-    private JTextField textField_birth;
     private JTextField textField_address;
     private JTextField textField_phone;
     private JTextField textField_who;
@@ -64,6 +68,8 @@ public class Login {
     private JMenuItem BeginMission;
     private JMenu accounter;
     private JMenuItem cancel;
+    private  JScrollPane scrollPane_1;
+    private JMenuItem recommend;
     public static void main(String[] args) {  
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -88,12 +94,20 @@ public class Login {
    private JTextField taTitle;
    private JTextField taSearchFiled;
    private JTextField asName;
-   private JTextField asSex;
    private JTextField asPhone;
-   private JTextField asBirthDay;
    private JPasswordField passwordField_2;
    private JTextField asAdress;
     private JLabel accountLabel;
+    private JTextField IMSearchFIeld;
+    private JPanel panel_IM;
+    private CardLayout clLogined;
+    private JTextField reName;
+    private JTextField staName;
+    private String[] IBString={"步兵", "骑兵"};
+    private String[] ISString1= {"东京步兵","海盗"};
+    private String[] ISString2= {"Toky"};
+
+    
     private void initialize() {
     	
         frame = new JFrame("能力规范文稿管理系统");//主界面
@@ -223,17 +237,6 @@ public class Login {
         panel_regis.add(textField_name);
         textField_name.setColumns(10);
 
-        textField_sex = new JTextField();//入会申请 性别输入框
-        textField_sex.setBounds(284, 138, 190, 24);
-        panel_regis.add(textField_sex);
-        textField_sex.setColumns(10);
-
-        textField_birth = new JTextField();//入会申请 生日输入框
-         
-        textField_birth.setBounds(284, 169, 190, 24);
-        panel_regis.add(textField_birth);
-        textField_birth.setColumns(10);
-
         textField_address = new JTextField();//入会申请 住址输入框
         textField_address.setBounds(284, 200, 190, 24);
         panel_regis.add(textField_address);
@@ -259,6 +262,7 @@ public class Login {
         JButton Button_quxiao = new JButton("取消");//入会申请 取消按钮
         Button_quxiao.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	rigonClear();
                 cl_panel_main.show(panel_main,"denglu");//取消事件
                 check=0;
             }
@@ -273,14 +277,7 @@ public class Login {
         Button_qingkong.setBackground(Color.GRAY);
         Button_qingkong.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) { //清空事件
-                textField_name.setText(null);
-                textField_sex.setText(null);
-                textField_birth.setText(null);
-                textField_address.setText(null);
-                textField_phone.setText(null);
-                textField_who.setText(null);
-                passwordField.setText(null);
-                textField_yh2.setText(null);
+             rigonClear();
 
 
             }
@@ -309,10 +306,6 @@ public class Login {
         birthWarn.setBounds(484, 169, 183, 37);
         panel_regis.add(birthWarn);
         
-        JLabel label = new JLabel("研究会");
-        label.setBounds(121, 365, 54, 15);
-        panel_regis.add(label);
-        
         JLabel miWarn = new JLabel("");
         miWarn.setForeground(Color.RED);
         miWarn.setBounds(484, 79, 183, 24);
@@ -333,21 +326,45 @@ public class Login {
         phoneWarn.setBounds(484, 231, 183, 24);
         panel_regis.add(phoneWarn);
         
-        JRadioButton IndustryBranch = new JRadioButton("");
-        IndustryBranch.setBounds(284, 297, 121, 23);
-        panel_regis.add(IndustryBranch);
+        IBBox = new JComboBox();
+        IBBox.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		if(String.valueOf(IBBox.getSelectedItem()).equals("步兵")) { SIBox.setModel(new DefaultComboBoxModel(ISString1)); }
+        		if(String.valueOf(IBBox.getSelectedItem()).equals("骑兵")) {  SIBox.setModel(new DefaultComboBoxModel(ISString2));}
+        	}
+        });
+        IBBox.setModel(new DefaultComboBoxModel(IBString));
+        IBBox.setBounds(281, 298, 193, 24);
+        panel_regis.add(IBBox);
         
-        JRadioButton Specialcommittee = new JRadioButton("");
-        Specialcommittee.setBounds(284, 327, 121, 23);
-        panel_regis.add(Specialcommittee);
+        SIBox = new JComboBox();
+        SIBox.setModel(new DefaultComboBoxModel(ISString1));
+        SIBox.setBounds(281, 328, 193, 24);
+        panel_regis.add(SIBox);
         
-        JRadioButton seminar = new JRadioButton("");
-        seminar.setBounds(284, 361, 121, 23);
-        panel_regis.add(seminar);
+        JComboBox sexBox = new JComboBox();
+        sexBox.setModel(new DefaultComboBoxModel(new String[] {"男", "女"}));
+        sexBox.setBounds(284, 141, 193, 24);
+        panel_regis.add(sexBox);
+        
+        JComboBox birthYearBox = new JComboBox();
+        birthYearBox.setModel(new DefaultComboBoxModel(new String[] {"1949", "1950", "1951", "1952", "1953", "1954", "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967", "1968", "1969", "1970", "1971", "1972", "1973", "1974", "1975", "1976", "1977", "1978", "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029"}));
+        birthYearBox.setBounds(284, 174, 72, 21);
+        panel_regis.add(birthYearBox);
+        
+        JComboBox birthMonthBox = new JComboBox();
+        birthMonthBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+        birthMonthBox.setBounds(366, 174, 43, 21);
+        panel_regis.add(birthMonthBox);
+        
+        JComboBox birthDateBox = new JComboBox();
+        birthDateBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+        birthDateBox.setBounds(417, 174, 57, 21);
+        panel_regis.add(birthDateBox);
 
-        JPanel panel_logined = new JPanel();//登陆后界面
+        panel_logined = new JPanel();//登陆后界面
         panel_main.add(panel_logined, "logined1");
-        CardLayout clLogined=   new CardLayout(0, 0);
+        clLogined=   new CardLayout(0, 0);
         
      
         panel_logined.setLayout(clLogined);
@@ -363,10 +380,79 @@ public class Login {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		/*
+		 * 规范编辑
+		 * 
+		 * 
+		 */
+        JPanel panel_Standard = new JPanel();
+        panel_logined.add(panel_Standard, "standard");
+        panel_Standard.setLayout(null);
+        
+        staName = new JTextField();
+        staName.setBounds(34, 41, 246, 21);
+        panel_Standard.add(staName);
+        staName.setColumns(10);
+        
+        
+        
+        JScrollPane scrollPane_3 = new JScrollPane();
+        scrollPane_3.setBounds(34, 84, 615, 371);
+        panel_Standard.add(scrollPane_3);
+        
+        JTextArea staText = new JTextArea();
+        scrollPane_3.setViewportView(staText);
+        
+        JLabel label_10 = new JLabel("规范名称");
+        label_10.setBounds(34, 16, 54, 15);
+        panel_Standard.add(label_10);
+        
+        JLabel label_11 = new JLabel("规范内容");
+        label_11.setBounds(34, 60, 54, 15);
+        panel_Standard.add(label_11);
+        
+        JButton staSend = new JButton("确定");
+        staSend.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) 
+        	{
+        		if(staName.getText().equals("")||staText.getText().equals("")) {JOptionPane.showMessageDialog(null, "请输入规范名称和规范内容", "警告", JOptionPane.ERROR_MESSAGE);return;}
+        	   Standard stan=new Standard();
+        	   stan.setAuthor(user.getAccount());
+        	   stan.setName(staName.getText());
+        	   stan.setText(staText.getText());
+        	   Standard.creatStandard(stan);
+        	   JOptionPane.showMessageDialog(null, "规范上传成功", "成功", JOptionPane.INFORMATION_MESSAGE);
+               staName.setText("");
+               staText.setText("");
+               clLogined.show(panel_logined, "nothing");
+        			   	   
+        	}
+        });
+        staSend.setBounds(556, 465, 93, 23);
+        panel_Standard.add(staSend);
+        
+        JButton staCancel = new JButton("取消");
+        staCancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	    staName.setText("");
+                staText.setText("");
+                clLogined.show(panel_logined, "nothing");
+        	}
+        });
+        staCancel.setBounds(453, 465, 93, 23);
+        panel_Standard.add(staCancel);
+        
+		
+		
+		
+		
+		
         /*
          * 
          * 提案搜索
          */
+        
         JPanel panel_Search = new JPanel();
         panel_logined.add(panel_Search, "taSearcher");
         panel_Search.setLayout(null);        
@@ -393,7 +479,7 @@ public class Login {
         		}
         		if(v.isEmpty()) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
         		if(v.get(0).getID()==0) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
-        		JTable proTable = new ProTable(v,null,null,user,0,1);
+        		JTable proTable = new ProTable(v,null,null,null,user,0,1);
                 taSearchScroll2 = new JScrollPane(proTable); 
                 
                 taSearchScroll2.setLocation(48, 153);
@@ -437,23 +523,11 @@ public class Login {
         asName.setBounds(157, 95, 190, 24);
         panel_accountSet.add(asName);
         
-        asSex = new JTextField();
-
-        asSex.setColumns(10);
-        asSex.setBounds(157, 129, 190, 24);
-        panel_accountSet.add(asSex);
-        
         asPhone = new JTextField();
 
         asPhone.setColumns(10);
         asPhone.setBounds(157, 163, 190, 24);
         panel_accountSet.add(asPhone);
-        
-        asBirthDay = new JTextField();
-
-        asBirthDay.setColumns(10);
-        asBirthDay.setBounds(157, 197, 190, 24);
-        panel_accountSet.add(asBirthDay);
         
         passwordField_2 = new JPasswordField();
         passwordField_2.setBounds(157, 61, 190, 24);
@@ -524,6 +598,31 @@ public class Login {
         label_8.setBounds(63, 65, 54, 20);
         panel_accountSet.add(label_8);
         
+        JComboBox asSexBox = new JComboBox();
+        asSexBox.setModel(new DefaultComboBoxModel(new String[] {"男", "女"}));
+        asSexBox.setBounds(157, 129, 193, 24);
+        panel_accountSet.add(asSexBox);
+        
+        JComboBox asDate = new JComboBox();
+        asDate.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+        asDate.setBounds(290, 200, 57, 21);
+        panel_accountSet.add(asDate);
+        
+        JComboBox asYear = new JComboBox();
+        asYear.setModel(new DefaultComboBoxModel(new String[] {"1949", "1950", "1951", "1952", "1953", "1954", "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967", "1968", "1969", "1970", "1971", "1972", "1973", "1974", "1975", "1976", "1977", "1978", "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029"}));
+        asYear.setBounds(157, 200, 72, 21);
+        panel_accountSet.add(asYear);
+        
+        JComboBox asMonth = new JComboBox();
+        asMonth.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"}));
+        asMonth.setBounds(239, 200, 43, 21);
+        panel_accountSet.add(asMonth);
+        
+        
+
+        
+        
+        
         /*
          * 
          * 
@@ -590,6 +689,8 @@ public class Login {
         taWarn.setBounds(282, 39, 287, 15);
         panel_taEdit.add(taWarn);
         
+
+        
         
         //提案编辑事件
         
@@ -626,8 +727,185 @@ public class Login {
         		
         	}
         });
-       
+       /*
+        * 
+        * 会员推荐
+        * 
+        */
+
+        JPanel panel_recommend = new JPanel();
+        panel_logined.add(panel_recommend, "recommend");
+        panel_recommend.setLayout(null);
         
+        reName = new JTextField();
+        reName.setBounds(73, 57, 149, 21);
+        panel_recommend.add(reName);
+        reName.setColumns(10);
+        
+        JTextArea reText = new JTextArea();
+        reText.setWrapStyleWord(true);
+        reText.setText(" ");
+        reText.setLineWrap(true);
+        reText.setBounds(0, 0, 622, 395);
+
+        
+        JScrollPane scrollPane_2 = new JScrollPane(reText);
+        scrollPane_2.setBounds(73, 103, 548, 371);
+        panel_recommend.add(scrollPane_2);
+        
+        JLabel reLabel = new JLabel("被推荐人即将使用账号：");
+        reLabel.setBounds(73, 32, 204, 15);
+        panel_recommend.add(reLabel);
+        
+        JLabel label_9 = new JLabel("推荐原因：");
+        label_9.setBounds(73, 88, 204, 15);
+        panel_recommend.add(label_9);
+        
+        JButton reSend = new JButton("提交");
+        reSend.addActionListener(new ActionListener() 
+        {
+        	public void actionPerformed(ActionEvent e) 
+        	{
+        		if(reName.getText().equals("")||reText.getText().equals("")) {  JOptionPane.showMessageDialog(null, "请填写被推荐人账号以及推荐原因", "信息不完整", JOptionPane.ERROR_MESSAGE); return;}
+        	    Users.insertRecommend(reName.getText(), user.getName(), reText.getText());
+        	    JOptionPane.showMessageDialog(null, "请通知被推荐人注册", "推荐成功", JOptionPane.INFORMATION_MESSAGE); 
+        	    reName.setText("");
+        	    reText.setText("");
+        	}
+        });
+        
+        reSend.setBounds(528, 495, 93, 23);
+        panel_recommend.add(reSend);
+        
+        JButton reCancel = new JButton("取消");
+        reCancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		clLogined.show(panel_logined, "nothing");
+        	}
+        });
+        reCancel.setBounds(425, 495, 93, 23);
+        panel_recommend.add(reCancel);
+        
+        
+        /*
+         * 身份管理
+         * 
+         * 
+         */
+        
+        
+        panel_IM = new JPanel();
+        panel_logined.add(panel_IM, "IM");
+        panel_IM.setLayout(null);
+        
+        IMSearchFIeld = new JTextField();
+        IMSearchFIeld.setBounds(44, 77, 252, 21);
+        panel_IM.add(IMSearchFIeld);
+        IMSearchFIeld.setColumns(10);
+        
+        JButton IMSearch = new JButton("搜索账号");
+
+        IMSearch.setBounds(318, 76, 93, 23);
+        panel_IM.add(IMSearch);
+        
+        scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(44, 108, 624, 334);
+		scrollPane_1 = new JScrollPane();
+        scrollPane_1.setBounds(44, 108, 624, 334);
+        panel_IM.add(scrollPane_1);
+        
+        JButton IMAccept = new JButton("同意");
+
+        IMAccept.setBounds(575, 452, 93, 23);
+        panel_IM.add(IMAccept);
+        
+        IMAccept.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+        		Vector<String> checked=usertable.getChecked(1);
+        		for(String account:checked)
+        		{
+        			
+						Users u=Users.getImformation(account);
+						u.setstate(true);
+						u.updateuser(u);
+					
+        		}
+        		getCheckAccount();
+        		} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		
+        	}
+        });
+        JButton IMRefuse = new JButton("拒绝");
+        IMRefuse.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) 
+        	{
+        		try {
+            		Vector<String> checked=usertable.getChecked(1);
+            		for(String account:checked)
+            		{
+            			
+    						Users u=Users.getImformation(account);
+    						u.deleteUser(u);
+    					
+            		}
+            		getCheckAccount();
+            		} catch (SQLException e1) {
+    					// TODO Auto-generated catch block
+    					e1.printStackTrace();
+    				}
+        		
+        	}
+        });
+        IMRefuse.setBounds(454, 452, 93, 23);
+        panel_IM.add(IMRefuse);
+        
+        IMSearch.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(IMSearchFIeld.getText().equals(""))
+        		{
+        			getCheckAccount();
+        			return;
+        		}
+        		try 
+        		{
+					Users u= Users.getImformation(IMSearchFIeld.getText());
+					if(u!=null)
+					{
+						Vector v=new Vector();
+						v.add(u);
+						usertable = new ProTable(null,null,v,null,user,2,1);
+						usertable.setVisible(true);
+			            scrollPane_1.setViewportView(usertable);
+						
+					}
+				} catch (SQLException e1) 
+        		{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		
+        	}
+        });
+        /*
+         * 
+         * 
+         * 
+         * 
+         * 规范搜索
+         * 
+         * 
+         */
+        JPanel panel_staSearch = new JPanel();
+        panel_logined.add(panel_staSearch, "staSearch");
+        panel_staSearch.setLayout(null);
+        
+        scrollPane_4 = new JScrollPane();
+        scrollPane_4.setBounds(29, 93, 624, 334);
+        panel_staSearch.add(scrollPane_4);
         /*
          * 
          * 
@@ -638,6 +916,14 @@ public class Login {
         
         accounter = new JMenu("账户");
         menuBar.add(accounter);
+        
+       recommend = new JMenuItem("会员推荐");
+        recommend.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		clLogined.show(panel_logined,"recommend");
+        	}
+        });
+        
         
         cancel = new JMenuItem("注销");
         cancel.addActionListener(new ActionListener() {
@@ -656,9 +942,14 @@ public class Login {
         		accountLabel.setText(user.getAccount());
         		asName.setText(user.getName());
         		asPhone.setText(String.valueOf(user.getContact()));
-        		asSex.setText(user.getSexInString());
+        		if(user.getSex()) {asSexBox.setSelectedIndex(0);}else {asSexBox.setSelectedIndex(1);}
         		asAdress.setText(user.getAdress());
-        		asBirthDay.setText(user.getbirthday().toString());
+        		
+        		  Calendar c = Calendar.getInstance();
+        		  c.setTime(user.getbirthday());
+        		  asYear.setSelectedIndex(c.get(Calendar.YEAR)-1949);
+        		  asMonth.setSelectedIndex(c.get(Calendar.MONTH));
+        		  asDate.setSelectedIndex(c.get(Calendar.DATE)-1);
         		clLogined.show(panel_logined,"accountSet");
         		check=1;
         	}
@@ -668,6 +959,17 @@ public class Login {
         gfSearch = new JMenuItem("规范查询");
         gfSearch.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		ProTable staTable;
+        		clLogined.show(panel_logined,"staSearch");	
+				try {
+					staTable = new ProTable(null,null,null,Standard.getStandard(),user,3,1);
+					staTable.setVisible(true);
+					scrollPane_4.setViewportView(staTable);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+        		
         	}
         });
         
@@ -676,18 +978,17 @@ public class Login {
         taEdit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		Vector v;
-				try {
-					v = proposal.getProposalByAccount(user.getAccount());
-					ProTable table=new ProTable(v,null, null, user, 0, 1);
-					table.setVisible(true);
-	        		taSearchScroll.setViewportView(table);
-	        		clLogined.show(panel_logined,"taEdit");	
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-        		
-        		
+        		try {
+        			v = proposal.getProposalByAccount(user.getAccount());
+        			ProTable table=new ProTable(v,null, null,null, user, 0, 1);
+        			table.setVisible(true);
+            		taSearchScroll.setViewportView(table);
+            		clLogined.show(panel_logined,"taEdit");	
+        		} catch (SQLException e1) {
+        			// TODO Auto-generated catch block
+        			e1.printStackTrace();
+        		}
+        		        		        		
         	}
         });
         
@@ -695,6 +996,7 @@ public class Login {
         gfEdit = new JMenuItem("规范编辑");
         gfEdit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		clLogined.show(panel_logined,"standard");
 
         	}
         });
@@ -716,6 +1018,10 @@ public class Login {
         IdentityManagement = new JMenuItem("身份管理");
         IdentityManagement.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		clLogined.show(panel_logined,"IM");     
+                getCheckAccount();
+        		
+                
         	}
         });
         
@@ -726,6 +1032,8 @@ public class Login {
         check1 = new JMenuItem("推荐（专委会）");
         check1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		ProCheckView pcv=new ProCheckView(user,0);
+        		pcv.setVisible(true);
         	}
         });
         
@@ -733,6 +1041,8 @@ public class Login {
         check2 = new JMenuItem("备案（行业分会）");
         check2.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		ProCheckView pcv=new ProCheckView(user,1);
+        		pcv.setVisible(true);
         	}
         });
         
@@ -740,6 +1050,8 @@ public class Login {
         check3 = new JMenuItem("立案（研究会）");
         check3.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		ProCheckView pcv=new ProCheckView(user,2);
+        		pcv.setVisible(true);
         	}
         });
         
@@ -777,27 +1089,6 @@ public class Login {
             	}	
         	}
         });
-        asSex.addFocusListener(new FocusAdapter() {
-        	@Override
-        	public void focusLost(FocusEvent e) 
-        	{
-        		if(asSex.getText().equals("男")||asSex.getText().equals("女"))
-            	{
-            		if(!asSexWarn.getText().equals("")&&check==0)
-            		{
-            			check=1;
-            		}
-            		asSexWarn.setText("");
-            	}
-            	else
-            	{
-            		check=0;
-            		asSexWarn.setText("请输入男或女");
-            	}
-        		
-        		
-        	}
-        });
         asPhone.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
@@ -810,27 +1101,6 @@ public class Login {
              	{   if(!asPhoneWarn.getText().equals("")&&check==0) {check=1;}
              	    asPhoneWarn.setText("");
              	}
-        	}
-        });
-        
-        asBirthDay.addFocusListener(new FocusAdapter() {
-        	@Override
-        	public void focusLost(FocusEvent e) {
-        		 SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
- 				Date date = null;
- 				try {
- 					date = formatter1.parse( asBirthDay.getText() );
- 					
- 				} catch (ParseException e1) {
- 					check=0;
- 					asBirthWarn.setText("<html>生日输入错误，<br>请按照格式yyyyHHdd输入<html>");
- 					return;
- 				}
- 				if(!asBirthWarn.getText().equals("")&&check==0) 
- 				{
- 					check=1;
- 				}
- 				asBirthWarn.setText("");
         	}
         });
         
@@ -849,7 +1119,7 @@ public class Login {
                  
                  user.setName(asName.getText());
                  user.setAdress(asAdress.getText());
-                 if(asSex.getText().equals("男"))
+                 if(String.valueOf(asSexBox.getSelectedItem()).equals("男"))
                 	 {
                 	     user.setSex(true) ;
                 	 }
@@ -859,11 +1129,14 @@ public class Login {
                 	 }
          
     				try 
-    				{
-    			        SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
-    					Date date = null;
-    					date = formatter1.parse( asBirthDay.getText() );
-    					user.setbirthday(date);
+    				{       SimpleDateFormat formatter1=new SimpleDateFormat("yyyy/MM/dd");
+					Date date = null;
+					formatter1.setLenient(false);
+					String d=String.valueOf(asYear.getSelectedItem())+"/"+String.valueOf(asMonth.getSelectedItem()+"/"+String.valueOf(asDate.getSelectedItem()));
+					date = formatter1.parse( d );
+
+					user.setbirthday(date);
+    				
     				}
     				catch (ParseException e2) 
     				{	
@@ -877,6 +1150,10 @@ public class Login {
     			    
         	}
         });
+        
+        
+
+        
         /*
          * 
          * 
@@ -949,26 +1226,6 @@ public class Login {
         	}
         	}
         });
-        textField_birth.addFocusListener(new FocusAdapter() {
-        	@Override
-        	public void focusLost(FocusEvent arg0) {
-        		 SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
-				Date date = null;
-				try {
-					date = formatter1.parse( textField_birth.getText() );
-					
-				} catch (ParseException e) {
-					check=0;
-					birthWarn.setText("<html>生日输入错误，<br>请按照格式yyyyHHdd输入<html>");
-					return;
-				}
-				if(!birthWarn.getText().equals("")&&check==0) 
-				{
-					check=1;
-				}
-				birthWarn.setText("");
-        	}
-        });
         textField_phone.addFocusListener(new FocusAdapter() {
         	public void focusLost(FocusEvent e) 
         	{    if(!isNumeric(textField_phone.getText()))
@@ -1007,26 +1264,6 @@ public class Login {
         	}
         });
         
-        textField_sex.addFocusListener(new FocusAdapter() {
-        	@Override
-        	public void focusLost(FocusEvent arg0) 
-        	{
-        	if(textField_sex.getText().equals("男")||textField_sex.getText().equals("女"))
-        	{
-        		if(!sexWarn.getText().equals("")&&check==0)
-        		{
-        			check=1;
-        		}
-        		sexWarn.setText("");
-        	}
-        	else
-        	{
-        		check=0;
-        		sexWarn.setText("请输入男或女");
-        	}
-        	}
-        });
-        
       //用户注册提交申请
          
         Button_tijiao.addActionListener(new ActionListener() {  
@@ -1044,7 +1281,7 @@ public class Login {
              rigonUser.setpassword(passwordField.getPassword());
              rigonUser.setName(textField_name.getText());
              rigonUser.setAdress(textField_address.getText());
-             if(textField_sex.getText().equals("男"))
+             if(String.valueOf(sexBox.getSelectedItem()).equals("男"))
             	 {
             	     rigonUser.setSex(true) ;
             	 }
@@ -1052,12 +1289,13 @@ public class Login {
             	 {
             		  rigonUser.setSex(false);
             	 }
-     
+               
 				try 
 				{
-			        SimpleDateFormat formatter1=new SimpleDateFormat("yyyyHHdd");
+			        SimpleDateFormat formatter1=new SimpleDateFormat("yyyy/MM/dd");
 					Date date = null;
-					date = formatter1.parse( textField_birth.getText() );
+					String d=String.valueOf(birthYearBox.getSelectedItem())+"/"+String.valueOf(birthMonthBox.getSelectedItem())+"/"+String.valueOf(birthDateBox.getSelectedItem());
+					date = formatter1.parse( d );
 					rigonUser.setbirthday(date);
 				}
 				catch (ParseException e2) 
@@ -1065,11 +1303,12 @@ public class Login {
 				}
 				rigonUser.setReferees(textField_who.getText());
 				rigonUser.setContact(Integer.parseInt(textField_phone.getText()));
-                rigonUser.setIndustryBranch(IndustryBranch.isSelected());
-                rigonUser.setseminar(seminar.isSelected());
-                rigonUser.setSpecialcommittee(Specialcommittee.isSelected());
+                rigonUser.setIndustryBranch(String.valueOf(IBBox.getSelectedItem()));
+                rigonUser.setseminar(false);
+                rigonUser.setSpecialcommittee(String.valueOf(SIBox.getSelectedItem()));
                 rigonUser.setstate(false);
                 Users.rigon(rigonUser);
+                rigonClear();
                 cl_panel_main.show(panel_main,"denglu");
                 JOptionPane.showMessageDialog(null, "注册成功请等待审核", "注册成功", JOptionPane.INFORMATION_MESSAGE); 
                 check=0;
@@ -1082,8 +1321,10 @@ public class Login {
     private void logincheck()
     {
     	 try {
-				user=Users.getImformation(textField_yh.getText(), passwordField_1.getPassword());
-				if(user==null){loginWarning.setText("账号不存在或者密码错误"); return;}
+				user=Users.getImformation(textField_yh.getText());
+		
+				if(user==null){loginWarning.setText("账号不存在或审核未通过"); return;}
+				if(!user.getPassword().equals( String.valueOf(passwordField_1.getPassword()))) {loginWarning.setText("密码错误");return;}
 				if(!user.getstate()) {loginWarning.setText("账号正在审核 请等待审核结束"); return;}
 				menuChange();
 				frame.setTitle("能力规范文稿管理系统       欢迎您，"+user.getName());
@@ -1102,26 +1343,52 @@ public class Login {
     {     accounter.removeAll();
           writing.removeAll();
           control.removeAll();
-          
+          clLogined.show(panel_logined,"nothing");
     	  cl_panel_main.show(panel_main,"denglu");//注销事件
           frame.setTitle("能力规范文稿管理系统 ");
     }
     
     private void menuChange()
-    { 
+    {    accounter.add(recommend);
     	 accounter.add(cancel);
     	 accounter.add(accountSet);
          writing.add(gfSearch);
          writing.add(taEdit);
          writing.add(gfEdit);
         writing.add(taSearch);
+        control.add(taCheck);
     	if(user.getadmin()) {control.add(IdentityManagement);}
     	if(user.getseminar()) {taCheck.add(check3);}
-    	if(user.getIndustryBranch()) {taCheck.add(check2);}
-    	if(user.getSpecialcommittee()) {taCheck.add(check1);}
+        taCheck.add(check2);
+        taCheck.add(check1);
     	control.add(BeginMission);
     }
-    
+    void rigonClear()
+    {
+        textField_name.setText(null);
+        textField_address.setText(null);
+        textField_phone.setText(null);
+        textField_who.setText(null);
+        passwordField.setText(null);
+        textField_yh2.setText(null);
+    	
+    	
+    }
+    void getCheckAccount()
+    {
+		try {
+			Admin admin=(Admin) user;
+			
+			usertable = new ProTable(null,null,admin.getUserByCheck(),null,user,2,1);
+			usertable.setVisible(true);
+            scrollPane_1.setViewportView(usertable);
+            
+            
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    }
     
     public boolean isNumeric(String str){
     	  if(str.length()==0) {return false;}

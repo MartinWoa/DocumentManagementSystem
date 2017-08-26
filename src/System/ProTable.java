@@ -25,8 +25,9 @@ public class ProTable extends JTable{
     Users user;
     String[] coluname0={"全选","编号","提案名称","作者","截至日期","状态","赞成数","反对数"};
     String[] coluname1= {"评论人","评论内容","评论时间","赞成"};
-    String[] coluname2= {"全选","编号","姓名","查看信息和推荐表" };
-	ProTable(Vector<proposal> pros,Vector<Comment> coms,Vector<Users> users,Users user,int modelSet,int col)
+    String[] coluname2= {"全选","账号","姓名" };
+    String[] coluname3= {"编号","规范名称","作者" };
+	ProTable(Vector<proposal> pros,Vector<Comment> coms,Vector<Users> users,Vector<Standard> stans,Users user,int modelSet,int col)
 	{  String[] coluname = null;
 		this.modelSet=modelSet;
 		this.col=col;
@@ -36,6 +37,7 @@ public class ProTable extends JTable{
 	case 0:coluname=coluname0;break;
 	case 1:coluname=coluname1;break;
 	case 2:coluname=coluname2;break;
+	case 3:coluname=coluname3;break;
 	}
 	
 	model=new DefaultTableModel(null,coluname){   //设置表格模式
@@ -53,8 +55,7 @@ public class ProTable extends JTable{
 		//添加标格监听事件
 		if(coluname[0].equals("全选")) 
 		{
-			TableColumnModel cM=table.getColumnModel();
-			cM.getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+
 			model=new DefaultTableModel(null,coluname){   //设置表格模式
 
 				public boolean isCellEditable(int rowIndex, int columnIndex)  
@@ -66,7 +67,10 @@ public class ProTable extends JTable{
 				}  
 
 			};
+
 			table.setModel(model);
+			TableColumnModel cM=table.getColumnModel();
+			cM.getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
 		     table.getTableHeader().addMouseListener
 		      (      
 		    		  
@@ -107,13 +111,31 @@ public class ProTable extends JTable{
               			  int rowIndex = table.rowAtPoint(e.getPoint());
               			  if(columnIndex==col)
               			  {
-              				  int id=(int) table.getValueAt(rowIndex, col);
+              				 
               				  
               				  try {
-      							proposal pro=proposal.getProposalById(id);
-      							JFrame textView=new ProTextView(user,pro);
-      							textView.setVisible(true);
-      							textView.setTitle(pro.getName());
+              					  switch(modelSet)
+              					  {
+              					  case 0:
+              						   int id=(int) table.getValueAt(rowIndex, col);
+            							proposal pro=proposal.getProposalById(id);
+              							JFrame textView=new ProTextView(user,pro);
+              							textView.setVisible(true);
+              							textView.setTitle(pro.getName());
+              							break;
+              					  case 2:
+              						   String  account=   (String) table.getValueAt(rowIndex, col);
+              						   
+              						   JFrame userView=new UserView(Users.getImformation(account));
+              						   break;
+              					  case 3:
+              						  int ID=(int) table.getValueAt(rowIndex, col-1);              						  
+              						  JFrame sta = new StaView(Standard.getStandard(ID));
+              						break;
+              						  
+              						  
+              					  }
+
       						} catch (SQLException e1) {
       							// TODO Auto-generated catch block
       							e1.printStackTrace();
@@ -157,7 +179,8 @@ public class ProTable extends JTable{
         {
         case 0:pro(pros);break;
         case 1:comment(coms);break;
-        
+        case 2:user(user,users);break;
+        case 3:standard(user,stans);break;
         }
 
  
@@ -172,6 +195,32 @@ public class ProTable extends JTable{
 	 * 
 	 * 
 	 */
+	void standard(Users user,Vector<Standard> stans)
+	{
+		Vector v;
+		for(Standard stan:stans)
+		{
+			v=new Vector();
+			v.add(stan.getID());
+			v.add(stan.getName());
+			v.add(stan.getAuthor());
+			model.addRow(v);
+		}
+	}
+	void user(Users user,Vector<Users> users)
+	{	  Vector v;
+	     
+	    	  for(Users u:users)
+	    	 {   v=new Vector();
+	    		 v.add(false);
+	    		 System.out.println(u.getAccount());
+	    		 v.add(u.getAccount());
+	    		 v.add(u.getName());
+	    		 model.addRow(v);
+	    	 }
+	      
+		
+	}
 	void comment(Vector<Comment> coms)
 	{  
 		 Vector v;
@@ -200,13 +249,13 @@ public class ProTable extends JTable{
 	
 	
 	
-	Vector getChecked()
+	Vector getChecked(int colnum)
 	{   Vector v=new Vector();
 		for(int i=0;i<table.getRowCount();i++)
 		{
 			if((boolean) table.getValueAt(i, 0)==true)
 			{
-				v.add(table.getValueAt(i, 1));
+				v.add(table.getValueAt(i, colnum));
 			}
 		}
 		return v;	

@@ -109,9 +109,10 @@ public class ProTextView extends JFrame {
         
         try {
 			Vector<Comment> coms=pro.getComment();
-			JTable com=new ProTable(null,coms,null,user, 1,-1);
+			JTable com=new ProTable(null,coms,null,null,user, 1,-1);
 			
-	       scrollPane3 = new JScrollPane(com);
+	       scrollPane3 = new JScrollPane();
+	       scrollPane3.setViewportView(com);
 	        scrollPane3.setSize(847, 121);
 	        scrollPane3.setLocation(74, 551);
 	        contentPane.add(scrollPane3);
@@ -154,11 +155,8 @@ public class ProTextView extends JFrame {
         		Comment.CreatComment(com);
                 try {
         			Vector<Comment> coms=pro.getComment();
-        			JTable comss=new ProTable(null,coms,null,user, 1,-1);
-        		       scrollPane3 = new JScrollPane(comss);
-        		        scrollPane3.setSize(847, 121);
-        		        scrollPane3.setLocation(74, 551);
-        		        contentPane.add(scrollPane3);
+        			JTable comss=new ProTable(null,coms,null,null,user, 1,-1);
+        			scrollPane3.setViewportView(comss);
         	    
         		} catch (SQLException e) {
         			// TODO Auto-generated catch block
