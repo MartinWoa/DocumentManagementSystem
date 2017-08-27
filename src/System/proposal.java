@@ -34,9 +34,9 @@ public class proposal {
 
     Vector getComment() throws SQLException
     {
-    CreatConnect con=new CreatConnect();
+ 
     Vector<Comment> com=new Vector<Comment>();
-    Statement sta=con.getConnection().createStatement();
+    Statement sta=CreatConnect.getConnect().createStatement();
     try(ResultSet res=sta.executeQuery("SELECT ID,proid,issupport,comment,commenter,commenttime FROM comment WHERE proid= "+ID+""))
     {
     	while(res.next())
@@ -55,9 +55,9 @@ public class proposal {
     }
 
    static Vector getProposalByAccount(String account) throws SQLException
-    {       CreatConnect con=new CreatConnect();
+    {       
     	Vector<proposal> pros =new Vector<proposal>() ;
-    	Statement sta=con.getConnection().createStatement();
+    	Statement sta=CreatConnect.getConnect().createStatement();
     	try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE author= '"+account+"'"))
     	{
     	  while(res.next())
@@ -94,11 +94,11 @@ public class proposal {
    }
    static void proUpdate(proposal pro)
    {   
-	   CreatConnect con=new CreatConnect();
+	   
 	   String sql="UPDATE proposal SET proname='"+pro.getName()+"' ,author='"+pro.getAuthor()+"' ,protext='"+pro.getText()+"' ,state="+pro.getstate()+" WHERE ID = "+pro.getID();
 	   try {
 		   
-		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 		ps.executeUpdate();
 		ps.close();
 	} catch (SQLException e) {
@@ -108,10 +108,10 @@ public class proposal {
    }
    static proposal getProposalById(int id) throws SQLException
     {   
-        CreatConnect con=new CreatConnect();
+       
         proposal pro=new proposal();
         Vector<proposal> pros =new Vector<proposal>() ;
-    	Statement sta=con.getConnection().createStatement();
+    	Statement sta=CreatConnect.getConnect().createStatement();
     	try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE ID= "+id+""))
     	{
     	  while(res.next())
@@ -149,12 +149,12 @@ public class proposal {
     }
     static void creatNewPro(proposal pro)
     {
-    	 CreatConnect con=new CreatConnect();
+    	 
     	 try 
     	 { 
     		 String sql = "Insert into proposal "+ "(proname,author,lasttime,protext,state)values(?,?,?,?,?)"; 
-			Statement sta=con.getConnection().createStatement();
-	 		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+			Statement sta=CreatConnect.getConnect().createStatement();
+	 		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 	 		ps.setString(1, pro.getName());
 	 		ps.setString(2, pro.getAuthor());
 	 		java.sql.Date sd =new java.sql.Date(pro.getDate().getTime());

@@ -105,7 +105,7 @@ public class Login {
     private JTextField staName;
     private String[] IBString={"步兵", "骑兵"};
     private String[] ISString1= {"东京步兵","海盗"};
-    private String[] ISString2= {"Toky"};
+    private String[] ISString2= {"北斗","都灵"};
 
     
     private void initialize() {

@@ -71,8 +71,8 @@ public abstract class  Users implements Serializable{
     static Users getImformation(String account) throws SQLException
     {   String pa;
     	Users user;
-    	CreatConnect con=new CreatConnect();
-    	Statement sta=con.getConnection().createStatement();
+    	
+    	Statement sta=CreatConnect.getConnect().createStatement();
     	try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state FROM user WHERE Account='"+account+"'"))
     	{   
     		while(res.next())
@@ -105,8 +105,8 @@ public abstract class  Users implements Serializable{
     }
     static boolean isexist(String account) throws SQLException
     {
-    	CreatConnect con=new CreatConnect();
-    	Statement sta=con.getConnection().createStatement();
+    	
+    	Statement sta=CreatConnect.getConnect().createStatement();
     	try(ResultSet res=sta.executeQuery("SELECT Account FROM user WHERE Account='"+account+"'"))
     	{
     		while(res.next())
@@ -122,8 +122,8 @@ public abstract class  Users implements Serializable{
          {
     	    return null;
          }
-         CreatConnect con=new CreatConnect();
-	     Statement sta=con.getConnection().createStatement();
+         
+	     Statement sta=CreatConnect.getConnect().createStatement();
 	    try(ResultSet res=sta.executeQuery("SELECT reason FROM referees WHERE Referees='"+this.getReferees()+"' And Recommended ='"+this.getAccount()+"'"))
 	    {
 	    	while(res.next())
@@ -137,11 +137,11 @@ public abstract class  Users implements Serializable{
     }
     static void deleteUser(Users user)
     {
-    	CreatConnect con=new CreatConnect();
+    	
 	    String sql="DELETE FROM user WHERE Account  = '"+user.Account+"' ";
 	    PreparedStatement ps;
 		try {
-			ps = con.getConnection().prepareStatement(sql);
+			ps = CreatConnect.getConnect().prepareStatement(sql);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -153,12 +153,12 @@ public abstract class  Users implements Serializable{
     }
     
     static void updateuser(Users user)
-    {  CreatConnect con=new CreatConnect();
+    {  
 	    java.sql.Date sd =new java.sql.Date(user.getbirthday().getTime());
 	    System.out.println(sd);
     	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee='"+user.getSpecialcommittee()+"' ,IndustryBranch='"+user.IndustryBranch+"' ,birthday='"+sd+"' ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+"  WHERE Account ='"+user.getAccount()+"' ";
     	try {
-			PreparedStatement ps=con.getConnection().prepareStatement(sql);
+			PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -168,11 +168,11 @@ public abstract class  Users implements Serializable{
     }
     static void insertRecommend(String recommended,String referees,String reason)
     {
-    	CreatConnect con=new CreatConnect();
+    	
     	try 
     	{
    		 String sql = "Insert into referees "+ "(Referees,Recommended,reason)values(?,?,?)";
-   		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+   		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
    		ps.setString(1, referees);
    		ps.setString(2, recommended);
    		ps.setString(3, reason);
@@ -186,10 +186,10 @@ public abstract class  Users implements Serializable{
     	}
     	}
     static void rigon(Users user)
-    {   CreatConnect con=new CreatConnect();
+    {  
     	try {
    		 String sql = "Insert into user "+ "(Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state,admin)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-   		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+   		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
     	ps.setString(1, user.getAccount());
     	ps.setString(2, user.getPassword());
     	ps.setString(3, user.getName());

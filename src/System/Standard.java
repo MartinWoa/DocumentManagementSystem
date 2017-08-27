@@ -22,8 +22,8 @@ public class Standard {
 	
 	static Vector getStandard() throws SQLException
 	{   
-		 CreatConnect con=new CreatConnect();
-		 Statement sta=con.getConnection().createStatement();
+		
+		 Statement sta=CreatConnect.getConnect().createStatement();
 		 try(ResultSet res=sta.executeQuery("SELECT ID,staname,statext,author FROM standard ")) 
 		 {   
 			 Vector<Standard> v= new Vector<Standard>() ;
@@ -42,8 +42,8 @@ public class Standard {
 	}
 	static Standard getStandard(int ID) throws SQLException
 	{   
-		 CreatConnect con=new CreatConnect();
-		 Statement sta=con.getConnection().createStatement();
+		
+		 Statement sta=CreatConnect.getConnect().createStatement();
 		 try(ResultSet res=sta.executeQuery("SELECT ID,staname,statext,author FROM standard WHERE ID="+ID+"")) 
 		 {   
 
@@ -63,10 +63,10 @@ public class Standard {
 	}
 	static void creatStandard (Standard stan)
 	{
-		 CreatConnect con=new CreatConnect();
+		
 		 String sql = "Insert into standard "+ "(staname,statext,author)values(?,?,?)";
 	   		try {
-				PreparedStatement ps=con.getConnection().prepareStatement(sql);
+				PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 				ps.setString(1, stan.getName());
 				ps.setString(2, stan.getText());
 				ps.setString(3, stan.getAuthor());

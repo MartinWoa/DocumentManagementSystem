@@ -4,8 +4,18 @@ import java.sql.*;
 import com.hxtt.sql.access.*;  //���� ������ɾ��
 public  class CreatConnect {
 	static private String connectway="jdbc:Access:///information.mdb";
-    private  Connection con;
-    CreatConnect()
+    private static  Connection con;
+    static private CreatConnect uniqueConnect;
+    static Connection  getConnect()
+    {
+    	if(uniqueConnect==null)
+    	{
+    		uniqueConnect=new CreatConnect();
+    	}
+    	return con;
+    	
+    }
+    private CreatConnect()
     {
     	try {
     		
@@ -16,17 +26,13 @@ public  class CreatConnect {
 		}
     }
     
-    Connection getConnection()
+    static void setconnectway(String way)
     {
-    	return con;
+    	connectway=way;
     }
-    void setconnectway(String way)
+    static String getConnectWay()
     {
-    	this.connectway=way;
-    }
-    String getConnectWay()
-    {
-    	return this.connectway;
+    	return connectway;
     }
 
 

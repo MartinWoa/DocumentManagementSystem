@@ -23,10 +23,10 @@ Date getTime() {return this.time;}
 
 static void CreatComment(Comment com)
 {
-	CreatConnect con=new CreatConnect();
+	
 	String sql = "Insert into comment "+ "(proid,issupport,comment,commenter,commenttime)values(?,?,?,?,?)";
 	try {
-		PreparedStatement ps=con.getConnection().prepareStatement(sql);
+		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 		ps.setInt(1,com.getProid());
 		ps.setBoolean(2,com.getSupport());
 		ps.setString(3,com.getComment());

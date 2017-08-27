@@ -7,10 +7,10 @@ import java.util.Vector;
 public class Admin  extends Users {
 	Vector getUserByCheck() throws SQLException
 	{   
-		CreatConnect con=new CreatConnect();
+		
 		Users user;
 		Vector<Users> users =new Vector<Users>();
-		Statement sta=con.getConnection().createStatement();
+		Statement sta=CreatConnect.getConnect().createStatement();
 		try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state FROM user WHERE state="+false+""))
 		{
 			while(res.next())
@@ -34,9 +34,10 @@ public class Admin  extends Users {
 		return users;
 	}
 	Vector getProposalByCheck() throws SQLException
-	{   CreatConnect con=new CreatConnect();
+	{   
+	
 		Vector<proposal> pros =new Vector<proposal>() ;
-		Statement sta=con.getConnection().createStatement();
+		Statement sta=CreatConnect.getConnect().createStatement();
 		try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE state= "+false+""))
 		{
 		  while(res.next())
