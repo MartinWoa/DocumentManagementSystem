@@ -95,7 +95,6 @@ public class ProTextView extends JFrame {
         JTextArea taInput2 = new JTextArea();
         taInput2.setWrapStyleWord(true);
         taInput2.setLineWrap(true);
-        taInput2.setText(" ");
         JScrollPane scrollPane2 = new JScrollPane(taInput2);
         scrollPane2.setSize(847, 89);
         scrollPane2.setLocation(74, 423);
@@ -109,7 +108,7 @@ public class ProTextView extends JFrame {
         
         try {
 			Vector<Comment> coms=pro.getComment();
-			JTable com=new ProTable(null,coms,null,null,user, 1,-1);
+			JTable com=new CommentTable(coms,user, 1,-1);
 			
 	       scrollPane3 = new JScrollPane();
 	       scrollPane3.setViewportView(com);
@@ -155,7 +154,7 @@ public class ProTextView extends JFrame {
         		Comment.CreatComment(com);
                 try {
         			Vector<Comment> coms=pro.getComment();
-        			JTable comss=new ProTable(null,coms,null,null,user, 1,-1);
+        			JTable comss=new CommentTable(coms,user, 1,-1);
         			scrollPane3.setViewportView(comss);
         	    
         		} catch (SQLException e) {

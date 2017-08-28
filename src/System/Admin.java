@@ -33,12 +33,12 @@ public class Admin  extends Users {
 		sta.close();
 		return users;
 	}
-	Vector getProposalByCheck() throws SQLException
+	Vector getProposalByCheck(int model) throws SQLException
 	{   
 	
 		Vector<proposal> pros =new Vector<proposal>() ;
 		Statement sta=CreatConnect.getConnect().createStatement();
-		try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE state= "+false+""))
+		try(ResultSet res=sta.executeQuery("SELECT ID,proname,author,lasttime,protext,state FROM proposal WHERE state= "+model+""))
 		{
 		  while(res.next())
 		  {

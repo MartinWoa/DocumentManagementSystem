@@ -101,6 +101,7 @@ public class proposal {
 		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 		ps.executeUpdate();
 		ps.close();
+		ProBC.broadcast();
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

@@ -13,17 +13,29 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class ProCheckView extends JFrame {
-
+public class ProCheckView extends JFrame implements Receiver{
+	ProCheckView p=this;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
 	private int checkModel;
     private ProTable protable;
+    Admin admin;
+    Users user;
 	/**
 	 * Create the frame.
 	 */
 	public ProCheckView(Users user,int checkModel) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				ProBC.remove(p);
+			}
+		});
+		ProBC.regist(p);
+		this.user=user;
 		this.checkModel=checkModel;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1006, 607);
@@ -31,10 +43,10 @@ public class ProCheckView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 	       contentPane.setLayout(null);
-		   Admin admin=new Admin();
+		   admin=new Admin();
 		   
 		   try {
-			    protable=new ProTable(admin.getProposalByCheck(),null,null,null,user,0,1);
+			    protable=new ProTable(admin.getProposalByCheck(checkModel),user,0,1);
 		        scrollPane = new JScrollPane();
 		        scrollPane.setViewportView(protable);
 		        scrollPane.setSize(980, 272);
@@ -67,8 +79,7 @@ public class ProCheckView extends JFrame {
 								case 2:p.setState(3);break;
 								}
 								proposal.proUpdate(p);
-								protable=new ProTable(admin.getProposalByCheck(),null,null,null,user,0,1);
-								scrollPane.setViewportView(protable);
+
 		        		}
 		        		
 		        		} catch (SQLException e) {
@@ -85,5 +96,16 @@ public class ProCheckView extends JFrame {
 			e.printStackTrace();
 		}
 	 
+	}
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		try {
+			protable=new ProTable(admin.getProposalByCheck(checkModel),user,0,1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		scrollPane.setViewportView(protable);
 	}
 }

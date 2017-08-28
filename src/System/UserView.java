@@ -13,6 +13,8 @@ import java.sql.SQLException;
 
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class UserView extends JFrame {
 
@@ -22,6 +24,12 @@ public class UserView extends JFrame {
 	 * Create the frame.
 	 */
 	public UserView(Users user) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				System.out.println("fuck");
+			}
+		});
 		this.setVisible(true);
         this.setTitle(user.getName());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

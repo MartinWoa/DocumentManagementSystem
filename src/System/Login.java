@@ -40,7 +40,7 @@ public class Login {
 	private JComboBox IBBox;
 	private JScrollPane scrollPane_4 ;
 	private JPanel panel_logined;
-	private ProTable usertable;
+	private UserTable usertable;
 	private JScrollPane taSearchScroll;
 	private JScrollPane taSearchScroll2;
     private Users user;
@@ -479,7 +479,7 @@ public class Login {
         		}
         		if(v.isEmpty()) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
         		if(v.get(0).getID()==0) {JOptionPane.showMessageDialog(null, "未找到结果", "警告", JOptionPane.ERROR_MESSAGE);return;}
-        		JTable proTable = new ProTable(v,null,null,null,user,0,1);
+        		JTable proTable = new ProTable(v,user,0,1);
                 taSearchScroll2 = new JScrollPane(proTable); 
                 
                 taSearchScroll2.setLocation(48, 153);
@@ -639,13 +639,13 @@ public class Login {
         taInput.setLineWrap(true);
         taInput.setText(" ");
         JScrollPane scrollPane = new JScrollPane(taInput);
-        scrollPane.setSize(624, 397);
+        scrollPane.setSize(595, 397);
         scrollPane.setLocation(48, 79);
         panel_taEdit.add(scrollPane);
         taSearchScroll = new JScrollPane(); 
         
         taSearchScroll.setLocation(48, 519);
-        taSearchScroll.setSize(615, 90);
+        taSearchScroll.setSize(595, 90);
         panel_taEdit.add(taSearchScroll);
         
           
@@ -662,17 +662,19 @@ public class Login {
         label_1.setBounds(48, 57, 91, 15);
         panel_taEdit.add(label_1);
         
-        JButton btnNewButton = new JButton("打印");
-        btnNewButton.setBounds(373, 486, 93, 23);
-        panel_taEdit.add(btnNewButton);
+        JButton taPrint = new JButton("打印");
+
+        taPrint.setBounds(344, 486, 93, 23);
+        panel_taEdit.add(taPrint);
         
-        JButton btnNewButton_1 = new JButton("保存");
-        btnNewButton_1.setBounds(476, 486, 93, 23);
-        panel_taEdit.add(btnNewButton_1);
+        JButton taSaver = new JButton("保存");
+
+        taSaver.setBounds(447, 486, 93, 23);
+        panel_taEdit.add(taSaver);
         
         JButton btnNewButton_2 = new JButton("提交");
     
-        btnNewButton_2.setBounds(579, 486, 93, 23);
+        btnNewButton_2.setBounds(550, 486, 93, 23);
         panel_taEdit.add(btnNewButton_2);
         
         JRadioButton taIsRead = new JRadioButton("我已阅读");
@@ -680,6 +682,23 @@ public class Login {
         panel_taEdit.add(taIsRead);
         
         JLabel lblNewLabel_1 = new JLabel("提案建议要求");
+        lblNewLabel_1.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseEntered(MouseEvent arg0) {
+        		Cursor cu = new Cursor(Cursor.HAND_CURSOR);  
+        		frame.setCursor(cu);
+        	}
+        	@Override
+        	public void mouseExited(MouseEvent e) {
+        		Cursor cu = new Cursor(Cursor.DEFAULT_CURSOR);  
+        		frame.setCursor(cu);
+        	}
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		clLogined.show(panel_logined,"staSearch");
+        	}
+        });
+        
         lblNewLabel_1.setForeground(Color.RED);
         lblNewLabel_1.setBounds(141, 490, 120, 15);
         panel_taEdit.add(lblNewLabel_1);
@@ -693,6 +712,32 @@ public class Login {
         
         
         //提案编辑事件
+        taPrint.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) 
+        	{
+        		if(taTitle.getText().equals("")||taInput.getText().equals(""))
+        		{
+        			taWarn.setText("标题和正文不可留空");
+        			return;
+        		}
+        		
+        		Printer.printPage(taTitle.getText(), taInput.getText());
+        	}
+        });
+        
+        
+        taSaver.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		if(taTitle.getText().equals("")||taInput.getText().equals(""))
+        		{
+        			taWarn.setText("标题和正文不可留空");
+        			return;
+        		}
+        		String[] texts=taInput.getText().split("\n");
+        		TextSaver.save(taTitle.getText(),texts);
+        		JOptionPane.showMessageDialog(null, "已保存至根目录", "保存成功", JOptionPane.INFORMATION_MESSAGE); 
+        	}
+        });
         
         btnNewButton_2.addActionListener(new ActionListener() {  //TODO:这里还没有做完超出三个未审核的就不能提交
         	public void actionPerformed(ActionEvent arg0)
@@ -877,7 +922,7 @@ public class Login {
 					{
 						Vector v=new Vector();
 						v.add(u);
-						usertable = new ProTable(null,null,v,null,user,2,1);
+						usertable = new UserTable(v,user,2,1);
 						usertable.setVisible(true);
 			            scrollPane_1.setViewportView(usertable);
 						
@@ -959,10 +1004,10 @@ public class Login {
         gfSearch = new JMenuItem("规范查询");
         gfSearch.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		ProTable staTable;
+        		StanTable staTable;
         		clLogined.show(panel_logined,"staSearch");	
 				try {
-					staTable = new ProTable(null,null,null,Standard.getStandard(),user,3,1);
+					staTable = new StanTable(Standard.getStandard(),user,3,1);
 					staTable.setVisible(true);
 					scrollPane_4.setViewportView(staTable);
 				} catch (SQLException e1) {
@@ -980,7 +1025,7 @@ public class Login {
         		Vector v;
         		try {
         			v = proposal.getProposalByAccount(user.getAccount());
-        			ProTable table=new ProTable(v,null, null,null, user, 0, 1);
+        			ProTable table=new ProTable(v, user, 0, 1);
         			table.setVisible(true);
             		taSearchScroll.setViewportView(table);
             		clLogined.show(panel_logined,"taEdit");	
@@ -1379,7 +1424,7 @@ public class Login {
 		try {
 			Admin admin=(Admin) user;
 			
-			usertable = new ProTable(null,null,admin.getUserByCheck(),null,user,2,1);
+			usertable = new UserTable(admin.getUserByCheck(),user,2,1);
 			usertable.setVisible(true);
             scrollPane_1.setViewportView(usertable);
             
