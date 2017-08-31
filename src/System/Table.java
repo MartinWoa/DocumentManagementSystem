@@ -30,51 +30,58 @@ public abstract class Table extends JTable {
     String[] coluname1= {"评论人","评论内容","评论时间","赞成"};
     String[] coluname2= {"全选","账号","姓名" };
     String[] coluname3= {"编号","规范名称","作者" };
-	Table(Vector vs,Users user,int modelSet,int col)
-	{  String[] coluname = null;
-		this.modelSet=modelSet;
-		this.col=col;
-     this.user=user;
- 	switch(modelSet)
- 	{
- 	case 0:coluname=coluname0;break;
- 	case 1:coluname=coluname1;break;
- 	case 2:coluname=coluname2;break;
- 	case 3:coluname=coluname3;break;
- 	}
+    void setModel()
+    {
 
-	
-	model=new DefaultTableModel(null,coluname){   //设置表格模式
+    	model=new DefaultTableModel(null,coluname){   //设置表格模式
 
-		public boolean isCellEditable(int rowIndex, int columnIndex)  
-		{  
+    		public boolean isCellEditable(int rowIndex, int columnIndex)  
+    		{  
 
-		        return false;  
-		}  
+    		        return false;  
+    		}  
 
-	     };
-     
-		table.setModel(model);
-		
-		//添加标格监听事件
-		if(coluname[0].equals("全选")) 
+    	     };
+         
+    		table.setModel(model);
+    		
+    		//添加标格监听事件
+    		if(coluname[0].equals("全选")) 
+    		{
+
+    			model=new DefaultTableModel(null,coluname){   //设置表格模式
+
+    				public boolean isCellEditable(int rowIndex, int columnIndex)  
+    				{  
+    				    if (columnIndex==0)  
+    				        return true;  
+    				    else  
+    				        return false;  
+    				}  
+
+    			};
+    			table.setModel(model);
+    			TableColumnModel cM=table.getColumnModel();
+    			cM.getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+    		}
+
+    }
+    void setString()
+    {
+     	switch(modelSet)
+     	{
+     	case 0:coluname=coluname0;break;
+     	case 1:coluname=coluname1;break;
+     	case 2:coluname=coluname2;break;
+     	case 3:coluname=coluname3;break;
+     	}
+    }
+    void setListener()
+    {
+    	if(coluname[0].equals("全选")) 
 		{
 
-			model=new DefaultTableModel(null,coluname){   //设置表格模式
-
-				public boolean isCellEditable(int rowIndex, int columnIndex)  
-				{  
-				    if (columnIndex==0)  
-				        return true;  
-				    else  
-				        return false;  
-				}  
-
-			};
-
-			table.setModel(model);
-			TableColumnModel cM=table.getColumnModel();
-			cM.getColumn(0).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+		
 		     table.getTableHeader().addMouseListener
 		      (      
 		    		  
@@ -104,6 +111,8 @@ public abstract class Table extends JTable {
 		    		  }
 		      );
 		}
+    	
+    	
         if(col!=-1)
         {   //点击查询
             table.addMouseListener(
@@ -134,6 +143,20 @@ public abstract class Table extends JTable {
           		  );
 
         }
+    }
+    void inti(Users user,int modelSet,int col)
+    {   this.user=user;
+    	this.modelSet=modelSet;
+    	this.col=col;
+    }
+	Table(Vector vs,Users user,int modelSet,int col)
+	{ 
+		inti(user,modelSet,col);
+
+    setString();
+    setModel();
+    setListener();
+	
     add(vs);
  
  
@@ -167,7 +190,7 @@ public abstract class Table extends JTable {
 	    	  for(Users u:users)
 	    	 {   v=new Vector();
 	    		 v.add(false);
-	    		 System.out.println(u.getAccount());
+	  
 	    		 v.add(u.getAccount());
 	    		 v.add(u.getName());
 	    		 model.addRow(v);

@@ -11,7 +11,7 @@ public class Admin  extends Users {
 		Users user;
 		Vector<Users> users =new Vector<Users>();
 		Statement sta=CreatConnect.getConnect().createStatement();
-		try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state FROM user WHERE state="+false+""))
+		try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state,IBAuthority,SIAuthority FROM user WHERE state="+false+""))
 		{
 			while(res.next())
 			{   

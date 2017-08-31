@@ -65,7 +65,7 @@ public class Login {
     private JMenuItem check1;
     private JMenuItem check2;
     private JMenuItem check3;
-    private JMenuItem BeginMission;
+
     private JMenu accounter;
     private JMenuItem cancel;
     private  JScrollPane scrollPane_1;
@@ -865,23 +865,9 @@ public class Login {
         panel_IM.add(IMAccept);
         
         IMAccept.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		try {
-        		Vector<String> checked=usertable.getChecked(1);
-        		for(String account:checked)
-        		{
-        			
-						Users u=Users.getImformation(account);
-						u.setstate(true);
-						u.updateuser(u);
-					
-        		}
-        		getCheckAccount();
-        		} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-        		
+        	public void actionPerformed(ActionEvent e) {   
+       
+        		setAuthority(0);
         	}
         });
         JButton IMRefuse = new JButton("拒绝");
@@ -892,10 +878,10 @@ public class Login {
             		Vector<String> checked=usertable.getChecked(1);
             		for(String account:checked)
             		{
-            			
+            			   
     						Users u=Users.getImformation(account);
     						u.deleteUser(u);
-    					
+    					    
             		}
             		getCheckAccount();
             		} catch (SQLException e1) {
@@ -907,6 +893,39 @@ public class Login {
         });
         IMRefuse.setBounds(454, 452, 93, 23);
         panel_IM.add(IMRefuse);
+        
+        JButton button = new JButton("备份");
+        button.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		setAuthority(2);
+        	}
+        });
+        button.setBounds(454, 500, 93, 23);
+        panel_IM.add(button);
+        
+        JButton button_1 = new JButton("推荐");
+        button_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) 
+        	{
+        		setAuthority(1);
+        		
+        	}
+        });
+        button_1.setBounds(575, 500, 93, 23);
+        panel_IM.add(button_1);
+        
+        JButton button_2 = new JButton("立案");
+        button_2.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		setAuthority(3);
+        	}
+        });
+        button_2.setBounds(336, 500, 93, 23);
+        panel_IM.add(button_2);
+        
+        JLabel lblNewLabel_2 = new JLabel("权限");
+        lblNewLabel_2.setBounds(270, 500, 59, 23);
+        panel_IM.add(lblNewLabel_2);
         
         IMSearch.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -1101,11 +1120,7 @@ public class Login {
         });
         
         
-        BeginMission = new JMenuItem("启动任务");
-        BeginMission.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        	}
-        });
+
         
         
         JMenu set = new JMenu("设置");
@@ -1352,6 +1367,8 @@ public class Login {
                 rigonUser.setseminar(false);
                 rigonUser.setSpecialcommittee(String.valueOf(SIBox.getSelectedItem()));
                 rigonUser.setstate(false);
+                rigonUser.setIB(false);
+                rigonUser.setSI(false);
                 Users.rigon(rigonUser);
                 rigonClear();
                 cl_panel_main.show(panel_main,"denglu");
@@ -1365,7 +1382,7 @@ public class Login {
     
     private void logincheck()
     {
-    	 try {
+    	 try {  
 				user=Users.getImformation(textField_yh.getText());
 		
 				if(user==null){loginWarning.setText("账号不存在或审核未通过"); return;}
@@ -1388,6 +1405,8 @@ public class Login {
     {     accounter.removeAll();
           writing.removeAll();
           control.removeAll();
+          taCheck.removeAll();
+          user=null;
           clLogined.show(panel_logined,"nothing");
     	  cl_panel_main.show(panel_main,"denglu");//注销事件
           frame.setTitle("能力规范文稿管理系统 ");
@@ -1404,9 +1423,9 @@ public class Login {
         control.add(taCheck);
     	if(user.getadmin()) {control.add(IdentityManagement);}
     	if(user.getseminar()) {taCheck.add(check3);}
-        taCheck.add(check2);
-        taCheck.add(check1);
-    	control.add(BeginMission);
+    	if(user.getSI()) {taCheck.add(check2);}
+        if(user.getIB()) {taCheck.add(check1);}
+
     }
     void rigonClear()
     {
@@ -1435,6 +1454,31 @@ public class Login {
 		}
     }
     
+    void setAuthority(int model)
+    {   
+ 		try {
+    		Vector<String> checked=usertable.getChecked(1);
+    		for(String account:checked)
+    		{
+    			
+					Users u=Users.getImformation(account);
+					u.setstate(true);
+					switch(model)
+					{
+					case 0:break;
+					case 1:u.setIB(true);break;
+					case 2:u.setSI(true);break;
+					case 3:u.setseminar(true);break;
+					}
+					u.updateuser(u);
+				
+    		}
+    		getCheckAccount();
+    		} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    }
     public boolean isNumeric(String str){
     	  if(str.length()==0) {return false;}
     	  for (int i = 0; i < str.length(); i++){

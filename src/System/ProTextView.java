@@ -166,6 +166,28 @@ public class ProTextView extends JFrame {
         });
         commentSend.setBounds(836, 518, 93, 23);
         contentPane.add(commentSend);
+        
+        JButton button = new JButton("保存");
+        button.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) 
+        	{
+        		String[] texts=taInput.getText().split("\n");
+        		TextSaver.save(taName.getText(),texts);
+        		JOptionPane.showMessageDialog(null, "已保存至根目录", "保存成功", JOptionPane.INFORMATION_MESSAGE); 
+        	}
+        });
+        button.setBounds(828, 384, 93, 23);
+        contentPane.add(button);
+        
+        JButton button_1 = new JButton("打印");
+        button_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e)
+        	{
+        		Printer.printPage(taName.getText(), taInput.getText());
+        	}
+        });
+        button_1.setBounds(725, 384, 93, 23);
+        contentPane.add(button_1);
 	}
 	
 	

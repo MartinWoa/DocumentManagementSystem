@@ -22,11 +22,17 @@ public abstract class  Users implements Serializable{
     private String Referees;  //鎺ㄤ粙浜?
     private boolean state;  //鐘舵??
     private boolean admin;
+    private boolean IBAuthority;
+    private boolean SIAuthority;
+    boolean getIB() {return this.IBAuthority;}
+    boolean getSI() {return this.SIAuthority;}
+    void setIB(boolean IB) {this.IBAuthority=IB;}
+    void setSI(boolean SI) {this.SIAuthority=SI;}
     boolean getadmin() {return admin;}
     String getAccount(){return Account;}
     String getPassword(){return password;}
     String getName(){return Name;}
-  boolean getSex(){return Sex;}
+     boolean getSex(){return Sex;}
     int getContact(){return Contact;}
     String getSpecialcommittee(){return Specialcommittee;}
     void setAccount(String rep){Account=rep;}
@@ -44,7 +50,7 @@ public abstract class  Users implements Serializable{
     Date getbirthday(){ return birthday;}
     String getAdress(){return Adress;}
     String getReferees(){return Referees;}
-
+    
    // String getSpecialcommittee(){return Specialcommittee;}
     void setbirthday(Date rep){birthday=rep;}
     void setAdress(String rep){Adress=rep;}
@@ -66,6 +72,8 @@ public abstract class  Users implements Serializable{
 	    this.setAdress(res.getString(11));
 	    this.setReferees(res.getString(12));
 	    this.setstate(res.getBoolean(13));
+	    this.setSI(res.getBoolean(14));
+	    this.setIB(res.getBoolean(15));
 	    
     }
     static Users getImformation(String account) throws SQLException
@@ -73,7 +81,7 @@ public abstract class  Users implements Serializable{
     	Users user;
     	
     	Statement sta=CreatConnect.getConnect().createStatement();
-    	try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state FROM user WHERE Account='"+account+"'"))
+    	try(ResultSet res=sta.executeQuery("SELECT admin,Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state,SIAuthority,IBAuthority FROM user WHERE Account='"+account+"'"))
     	{   
     		while(res.next())
     		{   
@@ -155,8 +163,8 @@ public abstract class  Users implements Serializable{
     static void updateuser(Users user)
     {  
 	    java.sql.Date sd =new java.sql.Date(user.getbirthday().getTime());
-	    System.out.println(sd);
-    	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee='"+user.getSpecialcommittee()+"' ,IndustryBranch='"+user.IndustryBranch+"' ,birthday='"+sd+"' ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+"  WHERE Account ='"+user.getAccount()+"' ";
+
+    	String sql="UPDATE user SET password ='"+user.getPassword()+"'  ,username='"+user.getName()+"' ,sex="+user.getSex()+" ,contact="+user.getContact()+" ,seminar="+user.getseminar()+" ,Specialcommittee='"+user.getSpecialcommittee()+"' ,IndustryBranch='"+user.IndustryBranch+"' ,birthday='"+sd+"' ,adress='"+user.getAdress()+"' ,referees='"+user.getReferees()+"' ,state="+user.getstate()+" ,admin="+user.admin+", SIAuthority="+user.getSI()+" ,IBAuthority="+user.getIB()+"  WHERE Account ='"+user.getAccount()+"' ";
     	try {
 			PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
 			ps.executeUpdate();
@@ -188,7 +196,7 @@ public abstract class  Users implements Serializable{
     static void rigon(Users user)
     {  
     	try {
-   		 String sql = "Insert into user "+ "(Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state,admin)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+   		 String sql = "Insert into user "+ "(Account,password,username,sex,contact,seminar,Specialcommittee,IndustryBranch,birthday,adress,referees,state,admin,SIAuthority,IBAuthority)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
    		PreparedStatement ps=CreatConnect.getConnect().prepareStatement(sql);
     	ps.setString(1, user.getAccount());
     	ps.setString(2, user.getPassword());
@@ -204,6 +212,8 @@ public abstract class  Users implements Serializable{
     	ps.setString(11, user.getReferees());
     	ps.setBoolean(12, user.getstate());
     	ps.setBoolean(13, user.getadmin());
+    	ps.setBoolean(14,user.getSI());
+    	ps.setBoolean(15, user.getIB());
     	ps.executeUpdate();
     	ps.close();
     	}

@@ -8,8 +8,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextArea;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class StaView extends JFrame {
 
@@ -52,5 +57,28 @@ public class StaView extends JFrame {
 	        staText.setEditable(false);
 	        staText.setText(stan.getText());
 	        scrollPane3.setViewportView(staText);
+	        
+	        JButton btnNewButton = new JButton("保存");
+	        btnNewButton.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent arg0) 
+	        	{
+	        		String[] texts=staText.getText().split("\n");
+	        		TextSaver.save(staName.getText(),texts);
+	        		JOptionPane.showMessageDialog(null, "已保存至根目录", "保存成功", JOptionPane.INFORMATION_MESSAGE); 
+	        	}
+	        });
+	        
+	        btnNewButton.setBounds(754, 460, 93, 23);
+	        contentPane.add(btnNewButton);
+	        
+	        JButton button = new JButton("打印");
+	        button.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) 
+	        	{
+	        		Printer.printPage(staName.getText(), staText.getText());
+	        	}
+	        });
+	        button.setBounds(651, 460, 93, 23);
+	        contentPane.add(button);
 	}
 }
